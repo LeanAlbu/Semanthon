@@ -1,0 +1,52 @@
+[TICKET-001] Épico: Agente RAG para Triagem Semântica de Logs
+
+De: Tech Lead
+Para: Leshy
+Status: To Do
+
+Fala, Leshy. Bem-vindo ao time.
+
+Nós temos um gargalo operacional crítico. Nossos servidores geram milhares de linhas de logs de acesso por dia, mas nosso time de cibersegurança está perdendo horas filtrando isso no braço para encontrar anomalias.
+
+Seu projeto para este ciclo é construir uma ferramenta inteligente de linha de comando (CLI) ou uma API simples que consuma esses logs, armazene-os de forma semântica e permita que a equipe de segurança faça perguntas em linguagem natural (ex: "Quais IPs tentaram acessar portas restritas na madrugada de ontem e falharam?").
+
+Para não criar dívida técnica, o projeto precisa ser escalável e totalmente conteinerizado.
+🎯 Entregáveis (A Jornada do Herói)
+
+Fase 1: Ingestão e Limpeza (O Pipeline ETL)
+
+    A Missão: Escrever um script em Python que leia um arquivo .txt ou .csv contendo logs de servidor simulados (você pode gerar uns 50 logs falsos para teste).
+
+    O Requisito: O script precisa limpar esses dados (remover caracteres estranhos) e quebrá-los em pedaços menores (o que chamamos de chunking no MLOps).
+
+    Ferramentas Recomendadas: Python puro ou Pandas.
+
+Fase 2: O Banco de Dados Vetorial (A Engenharia de Dados)
+
+    A Missão: Transformar os logs em vetores matemáticos (Embeddings) e salvá-los em um Vector DB, em vez de um banco relacional tradicional.
+
+    O Requisito: Quando eu buscar por "ataque", o banco precisa me trazer logs que falem sobre "invasão" ou "brute-force", mesmo que a palavra "ataque" não esteja escrita lá. É aqui que você aplica a intuição de Álgebra Linear.
+
+    Ferramentas Recomendadas: ChromaDB (para rodar localmente de forma levíssima) e a biblioteca SentenceTransformers (Hugging Face) para gerar os vetores.
+
+Fase 3: A Inteligência (O Módulo RAG)
+
+    A Missão: Conectar um modelo de linguagem (LLM/SLM) para ler os logs recuperados na Fase 2 e responder a pergunta do usuário com base exclusivamente no que está nos logs.
+
+    O Requisito: Se a resposta não estiver nos logs, o modelo tem que ser instruído a dizer "Não encontrei essa informação", em vez de alucinar.
+
+    Ferramentas Recomendadas: Biblioteca LangChain ou LlamaIndex para orquestrar o RAG, e a API do Groq ou da própria Hugging Face para usar um modelo open-source gratuito (como o Llama-3) como motor de resposta.
+
+Fase 4: Infraestrutura e MLOps
+
+    A Missão: Ninguém na nossa squad vai instalar Python e bibliotecas na própria máquina para testar o seu código.
+
+    O Requisito: Crie um Dockerfile e um docker-compose.yml. Eu preciso clonar o seu repositório, rodar docker compose up e o sistema inteiro (banco de dados vetorial, pipeline e aplicação) tem que subir perfeitamente isolado.
+
+🤝 Regras do Jogo (Mentoria)
+
+    Sem atalhos de código: Eu não vou te passar o script pronto. Se você travar no erro do Vector DB, você me traz a mensagem de erro e o seu raciocínio, e eu te dou a documentação ou a correção de rota arquitetural.
+
+    Passo a passo: Não tente fazer tudo de uma vez. Abrace uma Fase de cada vez. Fez o ETL rodar na Fase 1? Me chama para um Code Review rápido antes de ir para os vetores.
+
+    Qualidade de Produção: Pense sempre: "Se o servidor cair no meio da execução, meu código lida com isso ou dá crash feio?". Trate as exceções.
