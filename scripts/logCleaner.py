@@ -21,4 +21,3 @@ vetor = organizador.agg(
 ).reset_index()
 
 
-#Organizar para ser vetorizado!
