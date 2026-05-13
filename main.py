@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from scripts import logCleaner
+from scripts import ingestion
 
-raw_logs = logCleaner.Load_data()
-logCleaner.See_data(raw_logs)
+ingestion.Database_ingestion()
