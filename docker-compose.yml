@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  soc-assistant:
+    build: .
+    container_name: soc_assistant_cli
+    env_file:
+      - .env
+    volumes:
+      - ./banco_vetorial:/app/banco_vetorial
+      - ./resources:/app/resources
+    stdin_open: true
+    tty: true
