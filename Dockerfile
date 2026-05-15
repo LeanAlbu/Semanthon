@@ -15,6 +15,6 @@ RUN chmod +x entrypoint.sh
 
 ENV PYTHONUNBUFFERED=1
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./start.sh"]
 
 CMD ["python", "main.py"]
