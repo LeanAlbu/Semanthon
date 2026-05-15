@@ -46,7 +46,6 @@ banco_vetorial/
 
 # Logs
 *.log
-resources/logs.jsonl
 
 # OS
 .DS_Store
