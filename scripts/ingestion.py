@@ -13,4 +13,4 @@ def Database_ingestion():
             str(row['source_ip'])
         )
 
-        print("Ingestão concluída")
+    print("Ingestão concluída")
