@@ -1,53 +1,55 @@
 # Semanthon
-### Agente RAG para Triagem Semântica de Logs
+### Agente RAG para Triagem Semântica de Logs e Inteligência de Ameaças
 
-O **Semanthon** é um assistente inteligente projetado para auxiliar analistas de um *Security Operations Center* (SOC) na triagem e análise de logs de sistema. Utilizando a arquitetura RAG (*Retrieval-Augmented Generation*), o sistema processa grandes volumes de dados não estruturados, armazena-os em um banco vetorial e permite consultas em linguagem natural com alta precisão e baixíssima latência.
+O **Semanthon** é um assistente inteligente projetado para auxiliar analistas de um *Security Operations Center* (SOC) na triagem e análise de logs de rede e sistema. Utilizando a arquitetura RAG (*Retrieval-Augmented Generation*), o sistema processa grandes volumes de dados não estruturados, armazena-os em um banco de dados vetorial local e permite consultas em linguagem natural com alta precisão e baixíssima latência.
 
 ---
 
-## 🚀 Funcionalidades
+## Funcionalidades Principais
 
-- **Pipeline de ETL Automatizado**: Limpeza, normalização e vetorização de logs brutos em formato JSONL.
-- **Busca Semântica**: Recuperação de contexto relevante utilizando ChromaDB.
-- **Inferência de Alta Performance**: Integração com a API Groq (modelo Llama 3.1 8b) para respostas rápidas e técnicas.
-- **Foco em Segurança**: Prompt system-level rigoroso e temperatura zero para mitigar alucinações e garantir respostas baseadas exclusivamente em evidências.
-- **Pronto para Produção**: Ambiente totalmente conteinerizado com Docker.
+- **Pipeline de ETL Automatizado**: Higienização, normalização e vetorização de logs brutos (formato JSONL) agregados por janelas temporais para otimização de contexto.
+- **Busca Semântica**: Recuperação de dados estruturados e não estruturados utilizando ChromaDB como motor vetorial persistente.
+- **Inferência de Alta Performance**: Integração com o modelo Llama-3.1-8b via API da Groq para respostas rápidas e estritamente técnicas.
+- **Engenharia de Prompt Segura**: Diretrizes de sistema rigorosas e temperatura zero configuradas para mitigar alucinações, garantindo respostas baseadas exclusivamente nas evidências contidas nos logs.
+- **Infraestrutura Resiliente**: Ambiente totalmente conteinerizado, incluindo rotinas de *cold-start* para ingestão automática de dados sem intervenção manual.
 
-## 🛠️ Tecnologias Utilizadas
+## Stack Tecnológico
 
 - **Linguagem**: Python 3.11
-- **LLM**: Groq (Llama 3.1 8b Instant)
-- **Banco Vetorial**: ChromaDB
-- **Processamento de Dados**: Pandas
-- **Containerização**: Docker & Docker Compose
+- **Inteligência Artificial**: Groq API (Llama-3.1-8b-Instant)
+- **Banco de Dados Vetorial**: ChromaDB
+- **Engenharia de Dados**: Pandas
+- **Infraestrutura e DevOps**: Docker e Docker Compose
 
-## 📋 Arquitetura do Sistema
+## Arquitetura do Sistema
 
-1. **Ingestão**: O script lê logs do diretório `resources/`, limpa caracteres especiais e agrupa eventos em janelas temporais de 5 minutos.
-2. **Vetorização**: O contexto é convertido em embeddings e armazenado no ChromaDB.
-3. **Consulta (RAG)**: O analista insere uma pergunta na CLI; o sistema busca os logs mais similares no banco vetorial.
-4. **Resposta**: O LLM recebe a pergunta do usuário enriquecida com o contexto recuperado e gera uma análise técnica.
+1. **Ingestão (ETL)**: O script processa os logs do diretório `resources/`, limpa anomalias e agrupa eventos em janelas temporais de 5 minutos.
+2. **Vetorização**: O contexto processado é convertido em *embeddings* e persistido no banco vetorial.
+3. **Recuperação (Retrieval)**: O analista insere uma query na CLI; o sistema realiza uma busca semântica de alta precisão no ChromaDB.
+4. **Geração (Generation)**: O LLM recebe a instrução estrita juntamente com os logs recuperados, gerando uma análise técnica, determinística e livre de viés.
 
-## ⚙️ Configuração e Instalação
+## Configuração e Instalação
 
 ### Pré-requisitos
 - Python 3.11 ou superior
-- Docker e Docker Compose (opcional para execução local)
-- Chave de API do [Groq](https://console.groq.com/)
+- Docker e Docker Compose (Recomendado)
+- Chave de API da [Groq](https://console.groq.com/)
 
 ### Variáveis de Ambiente
-Crie um arquivo `.env` na raiz do projeto:
+Crie um arquivo `.env` na raiz do projeto contendo a sua credencial:
 ```env
 GROQ_API_KEY=sua_chave_aqui
 ```
 
 ### Execução via Docker (Recomendado)
-O Docker iniciará automaticamente o pipeline de ingestão caso o banco vetorial esteja vazio.
+O ambiente Docker foi projetado para inicializar automaticamente o pipeline de ingestão caso o banco vetorial esteja vazio. Para iniciar o terminal interativo, execute:
+
 ```bash
-docker-compose up --build
+docker compose build
+docker compose run --rm soc-assistant
 ```
 
-### Execução Local
+### Execução Local (Sem Docker)
 1. Instale as dependências:
    ```bash
    pip install -r requirements.txt
@@ -56,22 +58,22 @@ docker-compose up --build
    ```bash
    python -m scripts.ingestion
    ```
-3. Inicie o assistente:
+3. Inicie a interface do assistente:
    ```bash
    python main.py
    ```
 
-## 📂 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```text
-├── core/             # Lógica central (LLM, Configuração do DB)
-├── crud/             # Operações de persistência e busca
-├── resources/        # Logs e dados brutos
-├── scripts/          # Scripts de ETL e ingestão
-├── banco_vetorial/   # Persistência do ChromaDB (gerado automaticamente)
-├── main.py           # Ponto de entrada da CLI
-└── start.sh          # Script de inicialização da infraestrutura
+├── core/             # Lógica central (Motor RAG, LLM e Configuração do DB)
+├── crud/             # Operações de persistência e busca vetorial
+├── resources/        # Logs e dados brutos em formato JSONL
+├── scripts/          # Scripts de ETL e ingestão automatizada
+├── banco_vetorial/   # Persistência local do ChromaDB (gerado dinamicamente)
+├── main.py           # Ponto de entrada do loop interativo da CLI
+└── start.sh          # Script de entrypoint para orquestração da infraestrutura
 ```
 
 ---
-*Este projeto foi desenvolvido com foco em eficiência operacional e precisão técnica para ambientes de cibersegurança.*
+*Este projeto foi desenvolvido com foco em eficiência operacional, reprodutibilidade de infraestrutura e precisão técnica para ambientes avançados de cibersegurança.*
